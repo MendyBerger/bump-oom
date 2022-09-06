@@ -1,0 +1,22 @@
+<script>
+let message;
+
+let imports = {
+    arduino: {
+        log_char: (c) => {
+            if(c === 10) { // if is '\n'
+                console.log(message);
+                message = "";
+            } else {
+                message += String.fromCharCode(c);
+            }
+        },
+    }
+}
+
+WebAssembly.instantiateStreaming(fetch("/target/wasm32-unknown-unknown/debug/bump_oom.wasm"), imports).then(mod => {
+    window.wasm = mod.instance.exports
+    console.log(mod);
+    window.wasm._start();
+})
+</script>
